@@ -1,0 +1,34 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Histórico de Atividades</h2>
+</div>
+
+<div class="card p-0 overflow-hidden">
+    <table class="table table-hover mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>Data</th>
+                <th>Exercício</th>
+                <th>Duração</th>
+                <th>Registrado em</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in historico %}
+            <tr>
+                <td class="fw-bold">{{ item.data_realizada|date:"d/m/Y" }}</td>
+                <td>{{ item.atividade.exercicio.nome }}</td>
+                <td>{{ item.duracao_real|default:"-" }} min</td>
+                <td class="text-muted small">{{ item.registrado_em|date:"d/m/Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center py-4 text-muted">Nenhum histórico registrado ainda. Conclua atividades no calendário!</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

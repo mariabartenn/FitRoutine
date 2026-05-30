@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">
+        Calendário da Semana 
+        {% if planejamento_ativo %}
+            <span class="badge bg-primary fs-6 align-middle ms-2">{{ planejamento_ativo.nome }}</span>
+        {% endif %}
+    </h2>
+    {% if planejamento_ativo %}
+        <a href="{% url 'planejamento_detail' planejamento_ativo.pk %}" class="btn btn-outline-primary">Editar Plano</a>
+    {% else %}
+        <a href="{% url 'planejamento_create' %}" class="btn btn-primary">Criar Plano</a>
+    {% endif %}
+</div>
+
+{% if planejamento_ativo %}
+    <div class="calendar-grid">
+        {% for dia_codigo, treinos in atividades.items %}
+        <div class="calendar-col">
+            <h5 class="text-center fw-bold border-bottom pb-2 mb-3 text-primary-custom">{{ dia_codigo }}</h5>
+            
+            {% if not treinos %}
+                <div class="text-center p-3 text-muted bg-light rounded" style="border: 1px dashed #ccc;">
+                    <small>Descanso</small>
+                </div>
+            {% else %}
+                {% for treino in treinos %}
+                <div class="card mb-3 {% if treino.concluida %}border-success{% else %}border-primary{% endif %} shadow-sm" style="border-width: 2px;">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge {% if treino.concluida %}bg-success{% else %}bg-primary{% endif %}">
+                                <i class="bi bi-clock"></i> {{ treino.horario|time:"H:i" }}
+                            </span>
+                        </div>
+                        <h6 class="fw-bold mb-1">{{ treino.exercicio.nome }}</h6>
+                        <p class="small text-muted mb-2">
+                            {{ treino.duracao }} min 
+                            {% if treino.series %} • {{ treino.series }}x{{ treino.repeticoes|default:"?" }}{% endif %}
+                        </p>
+                        
+                        <form action="{% url 'marcar_concluida' treino.pk %}" method="post">
+                            {% csrf_token %}
+                            {% if treino.concluida %}
+                                <button type="submit" class="btn btn-success btn-sm w-100"><i class="bi bi-check2-circle"></i> Concluído</button>
+                            {% else %}
+                                <button type="submit" class="btn btn-outline-primary btn-sm w-100">Marcar Feito</button>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-calendar-x text-muted mb-3 d-block" style="font-size: 4rem;"></i>
+        <h4 class="text-muted">Nenhum planejamento ativo encontrado.</h4>
+        <p class="text-muted">Crie um planejamento semanal para ver suas atividades aqui.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

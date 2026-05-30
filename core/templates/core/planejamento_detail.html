@@ -1,0 +1,56 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card p-4 mb-4">
+            <h4 class="fw-bold">{{ planejamento.nome }}</h4>
+            <p class="text-muted mb-2">{{ planejamento.data_inicio|date:"d/m/Y" }} a {{ planejamento.data_fim|date:"d/m/Y" }}</p>
+            {% if planejamento.ativo %}
+                <span class="badge bg-primary mb-3">Plano Ativo</span>
+            {% endif %}
+            <hr>
+            <h5 class="fw-bold mb-3">Adicionar Treino</h5>
+            <form method="post">
+                {% csrf_token %}
+                {% load crispy_forms_tags %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary w-100 mt-2">Adicionar</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card p-4">
+            <h4 class="fw-bold mb-4">Atividades Programadas</h4>
+            {% if atividades %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Dia</th>
+                                <th>Horário</th>
+                                <th>Exercício</th>
+                                <th>Duração</th>
+                                <th>Séries</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for atv in atividades %}
+                            <tr>
+                                <td class="fw-bold">{{ atv.get_dia_semana_display }}</td>
+                                <td>{{ atv.horario|time:"H:i" }}</td>
+                                <td>{{ atv.exercicio.nome }}</td>
+                                <td>{{ atv.duracao }} min</td>
+                                <td>{{ atv.series|default:"-" }}x{{ atv.repeticoes|default:"-" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">Nenhuma atividade programada neste plano.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

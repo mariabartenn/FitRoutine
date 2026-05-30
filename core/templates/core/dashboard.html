@@ -1,0 +1,161 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h2 class="fw-bold">Olá, {{ user.first_name|default:user.username }}! 👋</h2>
+        <p class="text-sec">Aqui está o resumo da sua rotina fitness desta semana.</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <div class="dropdown d-inline-block">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="bi bi-plus-circle"></i> Novo...
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'exercicio_create' %}"><i class="bi bi-bicycle"></i> Exercício</a></li>
+                <li><a class="dropdown-item" href="{% url 'planejamento_create' %}"><i class="bi bi-card-list"></i> Planejamento</a></li>
+                <li><a class="dropdown-item" href="{% url 'meta_create' %}"><i class="bi bi-trophy"></i> Meta Semanal</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'categoria_create' %}"><i class="bi bi-tags"></i> Nova Categoria</a></li>
+                <li><a class="dropdown-item" href="{% url 'grupo_create' %}"><i class="bi bi-person-bounding-box"></i> Novo Grupo Muscular</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Meta Semanal -->
+    <div class="col-md-4">
+        <div class="card h-100 p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-trophy text-accent-custom"></i> Meta da Semana</h5>
+            {% if meta_atual %}
+                <p class="mb-1">{{ meta_atual.descricao }}</p>
+                <div class="d-flex justify-content-between text-muted small mb-2">
+                    <span>Progresso</span>
+                    <span>X / {{ meta_atual.quantidade_treinos }} treinos</span>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar progress-bar-custom" style="width: 50%"></div>
+                </div>
+            {% else %}
+                <p class="text-muted">Nenhuma meta definida para esta semana.</p>
+                <a href="{% url 'meta_create' %}" class="btn btn-sm btn-outline-primary mt-2">Definir Meta</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Planejamento Atual -->
+    <div class="col-md-4">
+        <div class="card h-100 p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-calendar-range text-primary-custom"></i> Planejamento Ativo</h5>
+            {% if planejamento_ativo %}
+                <h6 class="text-primary-custom fw-bold">{{ planejamento_ativo.nome }}</h6>
+                <p class="text-muted small mb-3">{{ planejamento_ativo.data_inicio|date:"d/m" }} até {{ planejamento_ativo.data_fim|date:"d/m" }}</p>
+                <a href="{% url 'calendario' %}" class="btn btn-sm btn-primary w-100">Ver Calendário</a>
+            {% else %}
+                <p class="text-muted">Você não tem um planejamento ativo no momento.</p>
+                <a href="{% url 'planejamento_create' %}" class="btn btn-sm btn-outline-primary mt-2">Criar Planejamento</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Treinos de Hoje -->
+    <div class="col-md-4">
+        <div class="card h-100 p-4 bg-primary text-white" style="border-radius: 16px;">
+            <h5 class="fw-bold mb-3"><i class="bi bi-lightning-charge"></i> Treinos de Hoje</h5>
+            {% if treinos_hoje %}
+                <ul class="list-unstyled mb-0">
+                {% for treino in treinos_hoje %}
+                    <li class="mb-2 {% if treino.concluida %}text-decoration-line-through text-white-50{% endif %}">
+                        <strong>{{ treino.horario|time:"H:i" }}</strong> - {{ treino.exercicio.nome }}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p class="mb-0 text-white-50">Dia de descanso ou sem planejamento ativo.</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-12 mt-2">
+        <div class="card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="bi bi-graph-up-arrow text-primary-custom"></i> Progresso da Semana</h5>
+            </div>
+            <div style="height: 250px;">
+                <canvas id="weeklyChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="bi bi-journal-text text-sec"></i> Últimas Anotações</h5>
+                <a href="{% url 'anotacao_create' %}" class="btn btn-sm btn-outline-secondary">Nova Nota</a>
+            </div>
+            {% if ultimas_anotacoes %}
+                <div class="list-group list-group-flush">
+                {% for nota in ultimas_anotacoes %}
+                    <div class="list-group-item px-0 border-0 mb-2 pb-2" style="border-bottom: 1px solid rgba(0,0,0,0.05) !important; background: transparent;">
+                        <h6 class="mb-1 fw-bold">{{ nota.titulo }}</h6>
+                        <p class="mb-1 text-muted small text-truncate">{{ nota.conteudo }}</p>
+                        <small class="text-sec"><i class="bi bi-calendar2-event"></i> {{ nota.data|date:"d/m/Y" }}</small>
+                    </div>
+                {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">Nenhuma anotação recente.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('weeklyChart').getContext('2d');
+    
+    // Gradiente para a linha
+    let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(124, 58, 237, 0.5)'); // primary
+    gradient.addColorStop(1, 'rgba(124, 58, 237, 0.0)');
+    
+    const weeklyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'],
+            datasets: [{
+                label: 'Minutos de Treino',
+                data: [0, 45, 0, 60, 30, 0, 45], // Exemplo estático para demonstrar WOW factor
+                borderColor: '#7C3AED',
+                backgroundColor: gradient,
+                borderWidth: 3,
+                pointBackgroundColor: '#EC4899',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#EC4899',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

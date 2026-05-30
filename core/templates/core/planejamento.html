@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Planejamentos</h2>
+    <a href="{% url 'planejamento_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Novo Plano</a>
+</div>
+
+<div class="row g-4">
+    {% for plan in planejamentos %}
+    <div class="col-md-4">
+        <div class="card h-100 p-4 {% if plan.ativo %}border-primary shadow{% endif %}" {% if plan.ativo %}style="border-width: 2px;"{% endif %}>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="fw-bold mb-0">{{ plan.nome }}</h5>
+                {% if plan.ativo %}
+                    <span class="badge bg-primary">Ativo</span>
+                {% endif %}
+            </div>
+            <p class="text-muted small mb-3">{{ plan.data_inicio|date:"d/m/Y" }} até {{ plan.data_fim|date:"d/m/Y" }}</p>
+            
+            <a href="{% url 'planejamento_detail' plan.pk %}" class="btn btn-outline-secondary btn-sm mt-auto">Detalhes / Editar</a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="text-center py-5">
+            <p class="text-muted">Nenhum planejamento criado ainda.</p>
+            <a href="{% url 'planejamento_create' %}" class="btn btn-primary">Criar Meu Primeiro Plano</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
