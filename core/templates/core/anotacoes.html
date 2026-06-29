@@ -12,7 +12,11 @@
         <div class="card h-100 p-4">
             <h5 class="fw-bold mb-2">{{ nota.titulo }}</h5>
             <small class="text-sec mb-3">{{ nota.data|date:"d/m/Y" }}</small>
-            <p class="mb-0 text-muted" style="white-space: pre-line;">{{ nota.conteudo }}</p>
+            <p class="mb-3 text-muted" style="white-space: pre-line;">{{ nota.conteudo }}</p>
+            <div class="d-flex gap-2 mt-auto">
+                <a href="{% url 'anotacao_update' nota.pk %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil"></i> Editar</a>
+                <a href="{% url 'anotacao_delete' nota.pk %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Excluir</a>
+            </div>
         </div>
     </div>
     {% empty %}

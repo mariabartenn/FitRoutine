@@ -3,6 +3,7 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold mb-0">Histórico de Atividades</h2>
+    <a href="{% url 'historico_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Novo Registro</a>
 </div>
 
 <div class="card p-0 overflow-hidden">
@@ -13,6 +14,7 @@
                 <th>Exercício</th>
                 <th>Duração</th>
                 <th>Registrado em</th>
+                <th class="text-end">Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -22,10 +24,13 @@
                 <td>{{ item.atividade.exercicio.nome }}</td>
                 <td>{{ item.duracao_real|default:"-" }} min</td>
                 <td class="text-muted small">{{ item.registrado_em|date:"d/m/Y H:i" }}</td>
+                <td class="text-end">
+                    <a href="{% url 'historico_delete' item.pk %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></a>
+                </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4" class="text-center py-4 text-muted">Nenhum histórico registrado ainda. Conclua atividades no calendário!</td>
+                <td colspan="5" class="text-center py-4 text-muted">Nenhum histórico registrado ainda. Conclua atividades no calendário ou adicione um registro manualmente!</td>
             </tr>
             {% endfor %}
         </tbody>

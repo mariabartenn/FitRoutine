@@ -9,6 +9,10 @@
             {% if planejamento.ativo %}
                 <span class="badge bg-primary mb-3">Plano Ativo</span>
             {% endif %}
+            <div class="d-flex gap-2 mb-3">
+                <a href="{% url 'planejamento_update' planejamento.pk %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil"></i> Editar Plano</a>
+                <a href="{% url 'planejamento_delete' planejamento.pk %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Excluir</a>
+            </div>
             <hr>
             <h5 class="fw-bold mb-3">Adicionar Treino</h5>
             <form method="post">
@@ -32,6 +36,8 @@
                                 <th>Exercício</th>
                                 <th>Duração</th>
                                 <th>Séries</th>
+                                <th>Status</th>
+                                <th class="text-end">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,6 +48,17 @@
                                 <td>{{ atv.exercicio.nome }}</td>
                                 <td>{{ atv.duracao }} min</td>
                                 <td>{{ atv.series|default:"-" }}x{{ atv.repeticoes|default:"-" }}</td>
+                                <td>
+                                    {% if atv.concluida %}
+                                        <span class="badge bg-success">Concluída</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Pendente</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a href="{% url 'atividade_update' atv.pk %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil"></i></a>
+                                    <a href="{% url 'atividade_delete' atv.pk %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></a>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>

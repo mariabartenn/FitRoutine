@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4 text-center">
+            <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 2.5rem;"></i>
+            <h4 class="fw-bold mt-3">Confirmar exclusão</h4>
+            <p class="text-muted">Tem certeza que deseja excluir <strong>"{{ objeto }}"</strong>? Esta ação não pode ser desfeita.</p>
+            <form method="post" class="d-flex justify-content-center gap-2 mt-3">
+                {% csrf_token %}
+                {% if voltar_pk %}
+                    <a href="{% url voltar voltar_pk %}" class="btn btn-outline-secondary">Cancelar</a>
+                {% else %}
+                    <a href="{% url voltar %}" class="btn btn-outline-secondary">Cancelar</a>
+                {% endif %}
+                <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Excluir</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

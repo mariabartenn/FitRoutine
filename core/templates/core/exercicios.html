@@ -15,6 +15,7 @@
                 <th>Grupo Muscular</th>
                 <th>Duração (min)</th>
                 <th>Séries/Rep</th>
+                <th class="text-end">Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -25,10 +26,14 @@
                 <td>{{ ex.grupo_muscular.nome }}</td>
                 <td>{{ ex.duracao_sugerida|default:"-" }}</td>
                 <td>{{ ex.series_sugeridas|default:"-" }} x {{ ex.repeticoes_sugeridas|default:"-" }}</td>
+                <td class="text-end">
+                    <a href="{% url 'exercicio_update' ex.pk %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil"></i></a>
+                    <a href="{% url 'exercicio_delete' ex.pk %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></a>
+                </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5" class="text-center py-4 text-muted">Nenhum exercício cadastrado.</td>
+                <td colspan="6" class="text-center py-4 text-muted">Nenhum exercício cadastrado.</td>
             </tr>
             {% endfor %}
         </tbody>

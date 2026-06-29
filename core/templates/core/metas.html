@@ -19,7 +19,19 @@
                 {% endif %}
             </div>
             <p class="text-muted small mb-3">{{ meta.data_inicio|date:"d/m/Y" }} até {{ meta.data_fim|date:"d/m/Y" }}</p>
-            <p class="mb-0"><strong>Objetivo:</strong> {{ meta.quantidade_treinos }} treinos na semana.</p>
+            <p class="mb-3"><strong>Objetivo:</strong> {{ meta.quantidade_treinos }} treinos na semana.</p>
+            <div class="d-flex gap-2 mt-auto">
+                <form action="{% url 'meta_concluir' meta.pk %}" method="post">
+                    {% csrf_token %}
+                    {% if meta.concluida %}
+                        <button type="submit" class="btn btn-outline-warning btn-sm"><i class="bi bi-arrow-counterclockwise"></i> Reabrir</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-outline-success btn-sm"><i class="bi bi-check2"></i> Concluir</button>
+                    {% endif %}
+                </form>
+                <a href="{% url 'meta_update' meta.pk %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil"></i> Editar</a>
+                <a href="{% url 'meta_delete' meta.pk %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Excluir</a>
+            </div>
         </div>
     </div>
     {% empty %}

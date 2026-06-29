@@ -84,3 +84,13 @@ class AnotacaoForm(forms.ModelForm):
         widgets = {
             'conteudo': forms.Textarea(attrs={'rows': 4}),
         }
+
+class HistoricoAtividadeForm(forms.ModelForm):
+    class Meta:
+        from .models import HistoricoAtividade
+        model = HistoricoAtividade
+        fields = ['atividade', 'data_realizada', 'duracao_real', 'observacoes']
+        widgets = {
+            'data_realizada': forms.DateInput(attrs={'type': 'date'}),
+            'observacoes': forms.Textarea(attrs={'rows': 2}),
+        }

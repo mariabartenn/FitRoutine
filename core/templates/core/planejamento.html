@@ -17,8 +17,12 @@
                 {% endif %}
             </div>
             <p class="text-muted small mb-3">{{ plan.data_inicio|date:"d/m/Y" }} até {{ plan.data_fim|date:"d/m/Y" }}</p>
-            
-            <a href="{% url 'planejamento_detail' plan.pk %}" class="btn btn-outline-secondary btn-sm mt-auto">Detalhes / Editar</a>
+
+            <div class="d-flex gap-2 mt-auto">
+                <a href="{% url 'planejamento_detail' plan.pk %}" class="btn btn-outline-primary btn-sm">Detalhes</a>
+                <a href="{% url 'planejamento_update' plan.pk %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil"></i></a>
+                <a href="{% url 'planejamento_delete' plan.pk %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></a>
+            </div>
         </div>
     </div>
     {% empty %}

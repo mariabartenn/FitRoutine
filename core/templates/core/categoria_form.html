@@ -10,7 +10,7 @@
                 {% csrf_token %}
                 {{ form|crispy }}
                 <div class="d-flex justify-content-end gap-2 mt-4">
-                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancelar</a>
+                    <a href="{% url 'categorias' %}" class="btn btn-outline-secondary">Cancelar</a>
                     <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
